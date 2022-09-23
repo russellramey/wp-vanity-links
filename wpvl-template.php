@@ -1,14 +1,24 @@
 <?php 
 // If WPVU class exists
 if (class_exists('WPVLVanityLinks')) {
-    // Set robots header
-    header("robots: noindex, nofollow", true);
-    // Set redirect/refresh header
-    header( "refresh:1;url=" . get_post_meta(get_the_ID(), $WPVLVanityLinks->config['metadata_target'], true ));
-    // If user is not logged in
-    if(!is_user_logged_in()){
-        // Increase view count for link
-        $WPVLVanityLinks->wpvl_update_meta_count(get_the_ID());
+
+    // Set target 
+    $target = get_post_meta(get_the_ID(), $WPVLVanityLinks->config['metadata_target'], true );
+    $target = ((strpos($target, '://') !== false) ? $target : 'http://' . $target);
+
+    // If target exists, and is not empty
+    if($target && $target != ''){
+        
+        // Set robots header
+        header("robots: noindex, nofollow", true);
+        // Set redirect/refresh header
+        header( "refresh:1;url=" . $target);
+
+        // If user is not logged in
+        if(!is_user_logged_in()){
+            // Increase view count for link
+            $WPVLVanityLinks->wpvl_update_meta_count(get_the_ID());
+        }
     }
 }
 
